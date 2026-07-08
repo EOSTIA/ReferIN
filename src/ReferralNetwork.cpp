@@ -1,28 +1,28 @@
 #include "ReferralNetwork.h"
-#include <queue>
-#include <algorithm>
+#include <bits/stdc++.h>
+using namespace std;
 
-ReferralNetwork::ReferralNetwork(const std::string &rootId, const std::string &rootName)
+ReferralNetwork::ReferralNetwork(const string &rootId, const string &rootName)
 {
-    root = std::make_unique<ReferralNode>(rootId, rootName);
+    root = make_unique<ReferralNode>(rootId, rootName);
 }
 
 ReferralNode *ReferralNetwork::addReferral(ReferralNode *parentNode,
-                                           const std::string &userId,
-                                           const std::string &name)
+                                           const string &userId,
+                                           const string &name)
 {
     if (!parentNode)
         return nullptr;
-    auto child = std::make_unique<ReferralNode>(userId, name);
+    auto child = make_unique<ReferralNode>(userId, name);
     child->parent = parentNode;
     ReferralNode *rawPtr = child.get();
-    parentNode->children.push_back(std::move(child));
+    parentNode->children.push_back(move(child));
     return rawPtr;
 }
 
-void ReferralNetwork::traverseDFS(const std::function<void(ReferralNode *)> &visit) const
+void ReferralNetwork::traverseDFS(const function<void(ReferralNode *)> &visit) const
 {
-    std::function<void(ReferralNode *)> dfs = [&](ReferralNode *node)
+    function<void(ReferralNode *)> dfs = [&](ReferralNode *node)
     {
         if (!node)
             return;
@@ -33,9 +33,9 @@ void ReferralNetwork::traverseDFS(const std::function<void(ReferralNode *)> &vis
     dfs(root.get());
 }
 
-void ReferralNetwork::traverseBFS(const std::function<void(ReferralNode *)> &visit) const
+void ReferralNetwork::traverseBFS(const function<void(ReferralNode *)> &visit) const
 {
-    std::queue<ReferralNode *> q;
+    queue<ReferralNode *> q;
     q.push(root.get());
     while (!q.empty())
     {
@@ -52,7 +52,7 @@ size_t ReferralNetwork::countDownline(ReferralNode *node) const
     if (!node)
         return 0;
     size_t count = 0;
-    std::function<void(ReferralNode *)> dfs = [&](ReferralNode *n)
+    function<void(ReferralNode *)> dfs = [&](ReferralNode *n)
     {
         for (auto &c : n->children)
         {
@@ -69,9 +69,9 @@ bool ReferralNetwork::removeSubtree(ReferralNode *node)
     if (!node || !node->parent)
         return false; // cannot remove root this way
     auto &siblings = node->parent->children;
-    auto it = std::find_if(siblings.begin(), siblings.end(),
-                           [&](const std::unique_ptr<ReferralNode> &p)
-                           { return p.get() == node; });
+    auto it = find_if(siblings.begin(), siblings.end(),
+                      [&](const unique_ptr<ReferralNode> &p)
+                      { return p.get() == node; });
     if (it == siblings.end())
         return false;
     siblings.erase(it); // unique_ptr destructor recursively frees subtree
