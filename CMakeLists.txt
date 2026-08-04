@@ -10,3 +10,9 @@ add_executable(referral_system
     src/main.cpp
     src/ReferralNetwork.cpp
 )
+
+# Empirical benchmark suite (BTree/HashMap/LRUCache latency + linear-scan comparison)
+add_executable(benchmark
+    benchmarks/benchmark.cpp
+)
+target_compile_options(benchmark PRIVATE -O2)
